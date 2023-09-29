@@ -1,11 +1,22 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { privateRoutes, publicRoutes } from '../routes'
 import { CHAT_ROUTE, LOGIN_ROUTE } from '../utils/consts'
+import { Context } from '../App'
 
 function AppRouter()
 {
-    const user = false
+    const { auth, user, setUser } = useContext(Context)
+    // const { user } = useAuthState(auth)
+
+    useEffect(() =>
+    {
+        if (auth.currentUser !== null) {
+            setUser(auth.currentUser.displayName)
+        }
+        else setUser(null)
+        console.log("user", auth.currentUser);
+    }, [auth])
     return (
         <>
             <Routes>
