@@ -1,12 +1,13 @@
 import './App.css'
 import Navbar from './components/Navbar'
 import AppRouter from './components/AppRouter'
-import React, { createContext, useState } from 'react'
+import React, { createContext, useEffect, useState } from 'react'
 import './index.css'
 import { BrowserRouter } from 'react-router-dom'
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import Loader from './components/Loader'
 
 const firebaseApp = initializeApp({
   apiKey: "AIzaSyAqhLY6ssTyzQ4aFqV5NGPtbOrR7Tm0adQ",
@@ -22,7 +23,30 @@ const auth = getAuth(firebaseApp)
 const firestore = getFirestore(firebaseApp)
 function App()
 {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false)
+  useEffect(() =>
+  {
+    setLoading(true)
+
+    const unsubscribe = auth.onAuthStateChanged((authUser) =>
+    {
+      if (authUser) {
+        setLoading(false)
+        setUser(authUser);
+      } else {
+        setLoading(false)
+        setUser(null);
+      }
+    });
+
+    return () =>
+    {
+      unsubscribe();
+    };
+  }, []);
+
+  if (loading) return <Loader />
   return (
     <Context.Provider value={{ user, setUser, firebaseApp, auth, firestore }}>
       <BrowserRouter>

@@ -7,7 +7,6 @@ import { Context } from '../App'
 function AppRouter()
 {
     const { auth, user, setUser } = useContext(Context)
-    // const { user } = useAuthState(auth)
 
     useEffect(() =>
     {
@@ -15,7 +14,6 @@ function AppRouter()
             setUser(auth.currentUser.displayName)
         }
         else setUser(null)
-        console.log("user", auth.currentUser);
     }, [auth])
     return (
         <>
